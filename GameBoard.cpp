@@ -3,7 +3,7 @@
 GameBoard::GameBoard(User* player1, User* player2) {
 	this->player1 = player1;
 	this->player2 = player2;
-	board[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+	spotsLeft = 9;
 }
 
 string GameBoard::checkWinner() {

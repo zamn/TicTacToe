@@ -12,12 +12,12 @@ class GameBoard {
 		void draw();
 
 	private:
-		char board[];	
+		char board[] = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };	
 		const static int count = 9;
 		string winner;
 		bool over;
 		string last;
-		int spotsLeft = 9;
+		int spotsLeft;
 		User *player1;	
 		User *player2;
 };
