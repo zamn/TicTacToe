@@ -5,10 +5,10 @@ using namespace std;
 
 class GameBoard {
 	public:
-		GameBoard(*User, *User);
+		GameBoard(User*, User*);
 		string checkWinner();
 		bool gameOver();	
-		int update(int, int);
+		int update(int, User&);
 		void draw();
 
 	private:
@@ -16,6 +16,8 @@ class GameBoard {
 		const static int count = 9;
 		string winner;
 		bool over;
+		string last;
+		int spotsLeft = 9;
 		User *player1;	
 		User *player2;
 };
