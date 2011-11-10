@@ -4,6 +4,10 @@ GameBoard::GameBoard(User* player1, User* player2) {
 	this->player1 = player1;
 	this->player2 = player2;
 	spotsLeft = 9;
+	board = new char[spotsLeft];
+	for (int i = 0; i < 9; i++) {	
+		board[i] = (char)(i+1);
+	}
 }
 
 string GameBoard::checkWinner() {
