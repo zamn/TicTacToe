@@ -5,15 +5,16 @@
 #include "../User.h"
 #include "../GameBoard.h"
 
-class UserTest : public CppUnit::TestFixture {
+class GameBoardTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(GameBoardTest);
 	CPPUNIT_TEST(testConstructor);
+	CPPUNIT_TEST(testUpdate);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
-	bool testCheckWinner();
-	bool testGameOver();	
-	int testUpdate();
+	void testCheckWinner();
+	void testGameOver();	
+	void testUpdate();
 	void tearDown();
 	void setUp();
 	void testConstructor();

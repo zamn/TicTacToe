@@ -13,22 +13,22 @@ void GameBoardTest::setUp() {
 }
 
 void GameBoardTest::testUpdate() {
-	CPPUNIT_ASSERT(gameboard->update(1,1,player1) == 1);
-	CPPUNIT_ASSERT(gameboard->update(1,2,player1) == 0);
-	CPPUNIT_ASSERT(gameboard->update(5,0,player1) == -1);
-	CPPUNIT_ASSERT(gameboard->update(1,7,player1) == -1);
+	CPPUNIT_ASSERT(gameboard->update(1,*player1) == 1);
+	CPPUNIT_ASSERT(gameboard->update(2,*player1) == 0);
+	CPPUNIT_ASSERT(gameboard->update(11,*player1) == -1);
+	CPPUNIT_ASSERT(gameboard->update(30,*player1) == -1);
 }
 
 void GameBoardTest::testCheckWinner() {
-	gameboard->update(2,1,player2);
-	gameboard->update(1,2,player1);
-	gameboard->update(2,2,player2);
-	gameboard->update(1,3,player1);
-	CPPUNIT_ASSERT(gameboard->checkWinner() == player1.getNick());
+	gameboard->update(4,*player2);
+	gameboard->update(2,*player1);
+	gameboard->update(6,*player2);
+	gameboard->update(3,*player1);
+	CPPUNIT_ASSERT(gameboard->checkWinner() == player1->getNick());
 }
 
 void GameBoardTest::testGameOver() {
-	CPPUNIT_ASSERT(over == true);
+	CPPUNIT_ASSERT(gameboard->gameOver() == true);
 }
 
 void GameBoardTest::tearDown() {

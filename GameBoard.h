@@ -1,3 +1,5 @@
+#ifndef _GAMEBOARD_H
+#define _GAMEBOARD_H
 #include <cppunit/extensions/HelperMacros.h>
 #include "User.h"
 
@@ -21,3 +23,4 @@ class GameBoard {
 		User *player1;	
 		User *player2;
 };
+#endif
