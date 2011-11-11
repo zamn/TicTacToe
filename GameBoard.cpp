@@ -1,12 +1,14 @@
 #include "GameBoard.h"
 
+using namespace std;
+
 GameBoard::GameBoard(User* player1, User* player2) {
 	this->player1 = player1;
 	this->player2 = player2;
 	spotsLeft = 9;
 	board = new char[spotsLeft];
 	for (int i = 0; i < 9; i++) {	
-		board[i] = (char)(i+1);
+		board[i] = (char)((int)'1'+i);
 	}
 }
 
@@ -70,9 +72,9 @@ int GameBoard::update(int p, User &u) {
 
 void GameBoard::draw() {
 	for (int i = 0; i < 9; i++) {
-		if (i % 3 == 0) {
+		if ((i+1) % 3 == 0) {
 			cout << board[i] << endl;
-			cout << "-- -- --" << endl;
+			cout << "----------" << endl;
 		}
 		else {
 			cout << board[i] << " | ";
