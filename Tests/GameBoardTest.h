@@ -9,6 +9,7 @@ class GameBoardTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(GameBoardTest);
 	CPPUNIT_TEST(testConstructor);
 	CPPUNIT_TEST(testUpdate);
+	CPPUNIT_TEST(testCheckWinner);
 	CPPUNIT_TEST_SUITE_END();
 
 public:

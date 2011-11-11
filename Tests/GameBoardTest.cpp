@@ -12,18 +12,25 @@ void GameBoardTest::setUp() {
 	gameboard = new GameBoard(player1, player2);
 }
 
+/* This is testing GameBoard's update function verifying
+ * all of the return types are returned
+ */
+
 void GameBoardTest::testUpdate() {
 	CPPUNIT_ASSERT(gameboard->update(1,*player1) == 1);
 	CPPUNIT_ASSERT(gameboard->update(2,*player1) == 0);
-	CPPUNIT_ASSERT(gameboard->update(11,*player1) == -1);
+	CPPUNIT_ASSERT(gameboard->update(11,*player2) == -1);
+	CPPUNIT_ASSERT(gameboard->update(7,*player2) == 1);
 	CPPUNIT_ASSERT(gameboard->update(30,*player1) == -1);
+	CPPUNIT_ASSERT(gameboard->update(9, *player1) == 1);
 }
 
 void GameBoardTest::testCheckWinner() {
-	gameboard->update(4,*player2);
-	gameboard->update(2,*player1);
-	gameboard->update(6,*player2);
-	gameboard->update(3,*player1);
+	CPPUNIT_ASSERT(gameboard->update(1,*player1) == 1);
+	CPPUNIT_ASSERT(gameboard->update(7,*player2) == 1);
+	CPPUNIT_ASSERT(gameboard->update(2,*player1) == 1);
+	CPPUNIT_ASSERT(gameboard->update(6,*player2) == 1);
+	CPPUNIT_ASSERT(gameboard->update(3,*player1) == 1);
 	CPPUNIT_ASSERT(gameboard->checkWinner() == player1->getNick());
 }
 

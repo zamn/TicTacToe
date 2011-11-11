@@ -50,21 +50,30 @@ string GameBoard::checkWinner() {
 	
 }
 
+/* GameBoard::update method returns serveral numbers
+ * the return values mean the following:
+ * -1 == spot taken! / invalid spot
+ *  0 == not the Users turn
+ *  1 == successfully updated
+ *  2 == game over, no spots remaining!
+ */
+
 int GameBoard::update(int p, User &u) {
 	if (last == u.getNick()) {
 		return 0;
 	}
 	else {
-		if (board[p] != ' ') {
+		if (board[p-1] == player1->getSymbol() || board[p-1] == player2->getSymbol() || p > count) {
 			return -1;
 		}
 		else {
-			board[p] = u.getSymbol();
+			board[p-1] = u.getSymbol();
 			cout << u.getNick() << " entered " << u.getSymbol() << " at postiion " << p << endl;
 			spotsLeft--;
 			if (spotsLeft == 0)
 				return 2;
 			draw();
+			last = u.getNick();
 			return 1;
 		}
 	}
