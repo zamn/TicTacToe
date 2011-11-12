@@ -12,8 +12,12 @@ GameBoard::GameBoard(User* player1, User* player2) {
 	}
 }
 
+GameBoard::~GameBoard() {
+	delete board;
+}
+
 string GameBoard::checkWinner() {
-	char prev;
+	char prev = board[0];
 	int cnt = 0;
 	// Diagnols!
 	if ((board[1] == board[5]) && (board[1] == board[9]) && (board[9] == board[5])) {
@@ -47,7 +51,7 @@ string GameBoard::checkWinner() {
 			cnt = 0;
 		}
 	}
-	
+	return "";	
 }
 
 /* GameBoard::update method returns serveral numbers
@@ -70,8 +74,14 @@ int GameBoard::update(int p, User &u) {
 			board[p-1] = u.getSymbol();
 			cout << u.getNick() << " entered " << u.getSymbol() << " at postiion " << p << endl;
 			spotsLeft--;
+			cout << "spotsleft: " << spotsLeft << endl;
 			if (spotsLeft == 0)
 				return 2;
+			else if (spotsLeft < 5) {
+				string winner = checkWinner();
+				if (winner != "") 
+					gameOver(winner);
+			}
 			draw();
 			last = u.getNick();
 			return 1;
@@ -91,6 +101,13 @@ void GameBoard::draw() {
 	}
 }
 
-bool GameBoard::gameOver() {
+bool GameBoard::gameOver(string player) {
+	if (over) {
+		cout << "Game over with " << player << " winning!" << endl;
+		cout << "resetting board..." << endl;
+		for (int i = 0; i < count; i++) {
+			board[i] = (char)((int)'1'+i);
+		}
+	}
 	return over;
 }

@@ -35,7 +35,7 @@ void GameBoardTest::testCheckWinner() {
 }
 
 void GameBoardTest::testGameOver() {
-	CPPUNIT_ASSERT(gameboard->gameOver() == true);
+	CPPUNIT_ASSERT(gameboard->gameOver("asdf") == true);
 }
 
 void GameBoardTest::tearDown() {

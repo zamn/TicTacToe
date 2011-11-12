@@ -8,8 +8,9 @@ using namespace std;
 class GameBoard {
 	public:
 		GameBoard(User*, User*);
+		~GameBoard();
 		string checkWinner();
-		bool gameOver();	
+		bool gameOver(string);	
 		int update(int, User&);
 		void draw();
 
