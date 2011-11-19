@@ -13,6 +13,8 @@ class GameBoard {
 		bool gameOver(string);	
 		int update(int, User&);
 		void draw();
+		int getSpots();
+		void reset();
 
 	private:
 		char* board;

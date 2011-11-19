@@ -74,16 +74,10 @@ int GameBoard::update(int p, User &u) {
 			board[p-1] = u.getSymbol();
 			cout << u.getNick() << " entered " << u.getSymbol() << " at postiion " << p << endl;
 			spotsLeft--;
-			cout << "spotsleft: " << spotsLeft << endl;
 			if (spotsLeft == 0)
 				return 2;
-			else if (spotsLeft < 5) {
-				string winner = checkWinner();
-				if (winner != "") 
-					gameOver(winner);
-			}
-			draw();
 			last = u.getNick();
+			draw();
 			return 1;
 		}
 	}
@@ -101,13 +95,22 @@ void GameBoard::draw() {
 	}
 }
 
+int GameBoard::getSpots() {
+	return spotsLeft;
+}
+
 bool GameBoard::gameOver(string player) {
 	if (over) {
 		cout << "Game over with " << player << " winning!" << endl;
 		cout << "resetting board..." << endl;
-		for (int i = 0; i < count; i++) {
-			board[i] = (char)((int)'1'+i);
-		}
+		reset();
 	}
 	return over;
+}
+
+void GameBoard::reset() {
+	for (int i = 0; i < count; i++) {
+		board[i] = (char)((int)'1'+i);
+	}
+	spotsLeft = 9;
 }
