@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
+#include <string.h>
 #include "ProtocolHandler.h"
 
 using namespace std;
@@ -11,7 +12,8 @@ int ProtocolHandler::intPlayer(int fd) {
 	memset(buf, 0, 1024);
 	int len = 500;
 
-	con = recv(fd, buf, len, 0);
+	int con = recv(fd, buf, len, 0);
+	cout << "diz b called?" << endl;
 	cout << buf << endl;
 	return 1;
 }

@@ -9,11 +9,13 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <stdlib.h>
 #include "ProtocolHandler.h"
 
 using namespace std;
 
 void *handleCon(void* arg) {
+	cout << "WHY ARE YNT YOU WORKING?!" << endl;
 	ProtocolHandler ph;
 	cout << "A new connection has come up!" << endl;
 	cout << ph.intPlayer(*(int*)arg) << endl;
@@ -64,8 +66,10 @@ int main(void) {
 	int con;
 
 	if (new_fd) {
+		cout << "wat" << endl;
 		if ((ret = pthread_create(&tid, NULL, handleCon, &new_fd)) != 0) {
 			cout << "ERROR!" << strerror(ret) << endl;
+			exit(1);
 		}
 	}
 
