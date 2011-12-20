@@ -1,5 +1,6 @@
 #include <iostream>
 #include <pthread.h>
+#include <errno.h> // debugging
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h> // for skipping
@@ -15,7 +16,6 @@
 using namespace std;
 
 void *handleCon(void* arg) {
-	cout << "WHY ARE YNT YOU WORKING?!" << endl;
 	ProtocolHandler ph;
 	cout << "A new connection has come up!" << endl;
 	cout << ph.intPlayer(*(int*)arg) << endl;
@@ -62,16 +62,19 @@ int main(void) {
 	}
 
 	addr_size = sizeof their_addr;
-	new_fd = accept(sock, (struct sockaddr *)&their_addr, &addr_size);
-	int con;
+	while (true) {
+		new_fd = accept(sock, (struct sockaddr *)&their_addr, &addr_size);
+		int con;
 
-	if (new_fd) {
-		cout << "wat" << endl;
-		if ((ret = pthread_create(&tid, NULL, handleCon, &new_fd)) != 0) {
-			cout << "ERROR!" << strerror(ret) << endl;
-			exit(1);
+		if (new_fd) {
+			if ((ret = pthread_create(&tid, NULL, handleCon, (void*)&new_fd)) != 0) {
+				cout << "ERROR!" << strerror(ret) << endl;
+				exit(1);
+			}
+			cout << ret << endl;
 		}
 	}
 
 	// deal with incoming sockets n shit with player objects	
+	return 0;
 }

@@ -7,17 +7,12 @@ using namespace std;
 
 class Player {
 	public:
-		Player(sockaddr_storage, int, int, string, char);
-		int getGameID();
+		Player(int, string, char);
 		char getSymbol();
 		string getNick();	
-		int getClientID();
-		void setGameID(int);
 	private:
-		struct sockaddr_storage addr;
-		int clientID;
+		int fd;
 		string nick;
 		char symbol;
-		int gameID;
 };
 #endif
