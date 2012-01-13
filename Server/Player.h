@@ -10,6 +10,7 @@ class Player {
 		Player(int, string, char);
 		char getSymbol();
 		string getNick();	
+		int getFD();
 	private:
 		int fd;
 		string nick;

@@ -11,14 +11,14 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <stdlib.h>
-#include "ProtocolHandler.h"
+#include "Socket.h"
 
 using namespace std;
 
 void *handleCon(void* arg) {
-	ProtocolHandler ph;
+	Socket sh;
 	cout << "A new connection has come up!" << endl;
-	cout << ph.intPlayer(*(int*)arg) << endl;
+	cout << sh.handle(*(int*)arg) << endl;
 	return 0;
 }
 

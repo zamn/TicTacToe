@@ -16,3 +16,7 @@ char Player::getSymbol() {
 string Player::getNick() {
 	return nick;
 }
+
+int Player::getFD() {
+	return fd;
+}

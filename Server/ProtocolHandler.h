@@ -7,6 +7,6 @@ using namespace std;
 
 class ProtocolHandler {
 	public:
-		int intPlayer(int);
+		int interpret(char[]);
 };
 #endif
