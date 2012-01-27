@@ -9,11 +9,25 @@
 
 using namespace std;
 
-int ProtocolHandler::interpret(char buffer[]) {
-	cout << "hi" << endl;	
+int getSize(char* arr) {
+	int count = 0;
+	while (*(arr + count) != '\0') {
+		cout << *(arr + count) << endl;
+		count++;
+	}
+	cout << count << endl;
+	return 0;
+}
+
+int ProtocolHandler::interpret(char* buffer) {
 	int size = (buffer[0] >> 4);
 	int command = (buffer[0] & ~240);
 	char symbol = buffer[1];
-	cout << symbol << endl;
+	if (command == 1) {
+		if (getSize(buffer) >= 3) {
+		}
+	}
+	else if (command == 3) {
+	}
 	return 0;
 }

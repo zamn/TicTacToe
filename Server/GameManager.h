@@ -7,8 +7,10 @@ using namespace std;
 
 class GameManager {
 	public:
-		exists(int);
-		addGame(Game);
+		GameManager();
+		bool exists(int);
+		bool addGame(Game);
 	private:
-		vector<Game> games;
+		Game *games;
 };
+#endif
