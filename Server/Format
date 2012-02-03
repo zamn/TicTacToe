@@ -1,5 +1,5 @@
 1 CONNECT <SYMBOL> <NICK> - [LENT0001][symbol][nick]
-2 SUCCESS - [00000010] -> Returned after successful event
+2 SUCCESS - [00000010][GAMEID] (optional) -> Returned after successful event
 3 CREATE - [00000011]
 7 FAIL - [REASON1001] -> Returned after failed event
 4 JOIN <GAMEID> - [EXTE0100][GAMEID] 

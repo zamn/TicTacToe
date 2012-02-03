@@ -7,6 +7,7 @@ using namespace std;
 
 class Socket {
 	public:
+		int handleInit(int);
 		int handle(int);
 };
 #endif

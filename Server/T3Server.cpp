@@ -3,7 +3,6 @@
 #include <errno.h> // debugging
 #include <stdio.h>
 #include <unistd.h>
-#include <fcntl.h> // for skipping
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -17,8 +16,17 @@ using namespace std;
 
 void *handleCon(void* arg) {
 	Socket sh;
+	char buf[1024];
+	int len = 1024;
+	int con = 0;
+	memset(buf, '\0', 1024);
 	cout << "A new connection has come up!" << endl;
-	cout << sh.handle(*(int*)arg) << endl;
+	if (sh.handleInit(*(int*)arg) == 0) {
+		cout << "AMIHERE?" << endl;
+		while (recv(*(int*)arg, buf, len, 0) != 0) {
+			sh.handle(*(int*)arg);
+		}
+	}
 	return 0;
 }
 
