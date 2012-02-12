@@ -18,15 +18,14 @@ int getSize(char* arr) {
 }
 
 int ProtocolHandler::interpret(char* buffer) {
-	int size = (buffer[0] >> 4);
 	int command = (buffer[0] & ~240);
-	char symbol = buffer[1];
 	if (command == 1) {
 		if (getSize(buffer) >= 3) {
 			return 1;
 		}
 	}
-	else if (command == 3) {
+	command = buffer[0];
+	if (command == 3) {
 		return 3;
 	}
 	else if (command == 4) {

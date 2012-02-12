@@ -7,10 +7,11 @@ using namespace std;
 class Game {
 	public:
 		Game(Player*);
-		void sendMove(string, int);
+		bool sendMove(string, int);
 		bool addPlayer(Player*);
-	private:
 		int gameID;
+		Player** getPlayers();
+	private:
 		bool full;
 		Player *p1;
 		Player *p2;

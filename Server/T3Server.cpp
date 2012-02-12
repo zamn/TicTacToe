@@ -21,12 +21,13 @@ void *handleCon(void* arg) {
 	int con = 0;
 	memset(buf, '\0', 1024);
 	cout << "A new connection has come up!" << endl;
-	if (sh.handleInit(*(int*)arg) == 0) {
+	if (sh.handleInit(*(int*)arg) == 1) {
 		cout << "AMIHERE?" << endl;
-		while (recv(*(int*)arg, buf, len, 0) != 0) {
-			sh.handle(*(int*)arg);
+		if (sh.detChoice(*(int*)arg) == 3) {
+			
 		}
 	}
+	cout << "HE QUIT! " << endl;
 	return 0;
 }
 
@@ -79,10 +80,8 @@ int main(void) {
 				cout << "ERROR!" << strerror(ret) << endl;
 				exit(1);
 			}
-			cout << ret << endl;
 		}
 	}
 
-	// deal with incoming sockets n shit with player objects	
 	return 0;
 }

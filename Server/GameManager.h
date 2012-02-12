@@ -11,9 +11,10 @@ class GameManager {
 		GameManager();
 		bool exists(int);
 		bool addGame(Game*);
+		Game* getGame(int);
 	private:
 		int tracker;
-		stack<int> free;
+		stack<int> *free;
 		Game *games[MAX_GAMES];
 };
 #endif
