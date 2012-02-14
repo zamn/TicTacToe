@@ -16,19 +16,15 @@ using namespace std;
  *
  */
 
-Socket::Socket() {
-	gm = new GameManager();
-}
 
-int Socket::handleInit(int fd) {
+Player* Socket::handleInit(int fd) {
 	char buf[1024];
 	memset(buf, '\0', 1024);
-	ProtocolHandler ph;
 	int len = 1024;
 	int con = 0; 
 	con = recv(fd, buf, len, 0);
 
-	if (ph.interpret(buf) == 1) {
+	if (ph->interpret(buf) == 1) {
 		int size = (buf[0] >> 4);
 		int command = (buf[0] & ~240);
 		char symbol = buf[1];
@@ -36,17 +32,13 @@ int Socket::handleInit(int fd) {
 		for (int i = 2; i < size+2; i++) {
 			user += buf[i];
 		}
-		p1 = new Player(fd, user, symbol);
 		cout << "User: " <<  user << endl;
 		cout << "Symbol: " << symbol << endl;
-		cout << "i\'s here?" << endl;
-		char* msg = new char[1];
-		msg[0] = (char)2;
-		len = 10;
-		send(fd, msg, len, 0);
+		ph->sendSuccess(fd);
+		return new Player(fd, user, symbol);
 	}
 
-	return ph.interpret(buf);
+	return NULL; 
 }
 
 /*
@@ -61,23 +53,15 @@ int Socket::handleInit(int fd) {
 */
 
 int Socket::detChoice(int fd) {
-	ProtocolHandler ph;	
 	int len = 1024;
 	int con = 0;
+	int gameID;
 	char buf[1024];
 	memset(buf, '\0', 1024);
 	char* msg;
 
 	recv(fd, buf, len, 0); 
-	if (ph.interpret(buf) == 3) {
-		msg = new char[2];
-		msg[0] = (char)2;
-		game = new Game(p1);
-		gm->addGame(game);
-		Game* garr = gm->getGame(0);
-		Player** parr = garr->getPlayers();
-		cout << parr[0]->getNick() << endl;
-		// Work on send back message.
+	if (ph->interpret(buf) == 3) {
 		return 3;
 	}
 

@@ -11,20 +11,33 @@
 #include <string.h>
 #include <stdlib.h>
 #include "Socket.h"
+#include "GameManager.h"
+#include "Player.h"
+#include "Game.h"
+#include "ProtocolHandler.h"
 
 using namespace std;
+
+GameManager gm;
 
 void *handleCon(void* arg) {
 	Socket sh;
 	char buf[1024];
 	int len = 1024;
 	int con = 0;
+	int gameID;
+	ProtocolHandler ph;
+	Player* p1;
 	memset(buf, '\0', 1024);
 	cout << "A new connection has come up!" << endl;
-	if (sh.handleInit(*(int*)arg) == 1) {
-		cout << "AMIHERE?" << endl;
+	if ((p1 = sh.handleInit(*(int*)arg)) != NULL) {
 		if (sh.detChoice(*(int*)arg) == 3) {
-			
+			if ((gameID = gm.addGame(new Game(p1))) != -1) {
+				Game* garr = gm.getGame(gameID);
+				Player** parr = garr->getPlayers();
+				cout << parr[0]->getNick() << endl;
+				ph.sendSuccess(gameID, *(int*)arg);
+			}
 		}
 	}
 	cout << "HE QUIT! " << endl;

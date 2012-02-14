@@ -3,19 +3,15 @@
 #include <iostream>
 #include <sys/socket.h>
 #include "Player.h"
-#include "GameManager.h"
+#include "ProtocolHandler.h"
 
 using namespace std;
 
 class Socket {
 	public:
-		Socket();
-		int handleInit(int);
+		Player* handleInit(int);
 		int detChoice(int);
 	private:
-		Player* p1;
-		Player* p2;
-		GameManager* gm;
-		Game* game;
+		ProtocolHandler* ph;
 };
 #endif

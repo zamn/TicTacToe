@@ -16,20 +16,25 @@ bool GameManager::exists(int n) {
 	return false;
 }
 
-bool GameManager::addGame(Game* g) {
+int GameManager::addGame(Game* g) {
+	cout << "MAX: " << MAX_GAMES << endl;
+	cout << "TRACKER: " << tracker << endl;
 	if (tracker <= MAX_GAMES) {
 		if (free->empty()) {
-			cout << "tits?";
 			games[tracker] = g;
 			tracker++;
+			cout << "TRACKER: " << tracker << endl;
+			return (tracker-1);
 		}
 		else {
-			games[free->top()] = g;
+			int spot = free->top();
+			games[spot] = g;
 			tracker++;
+			return spot;
 		}
 	}
 	else
-		return false;
+		return -1;
 }
 
 Game* GameManager::getGame(int n) {

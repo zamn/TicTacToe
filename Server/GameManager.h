@@ -10,7 +10,7 @@ class GameManager {
 	public:
 		GameManager();
 		bool exists(int);
-		bool addGame(Game*);
+		int addGame(Game*);
 		Game* getGame(int);
 	private:
 		int tracker;

@@ -35,3 +35,15 @@ int ProtocolHandler::interpret(char* buffer) {
 	}
 	return 0;
 }
+
+void ProtocolHandler::sendSuccess(int gid, int fd) {
+	int gameID = gid;
+	cout << gameID << endl;
+}
+
+void ProtocolHandler::sendSuccess(int fd) {
+	char* msg = new char[1];
+	msg[0] = (char)2;
+	int len = 10;
+	send(fd, msg, len, 0);
+}
