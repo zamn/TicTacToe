@@ -4,8 +4,6 @@
 #include "Game.h"
 #include "Player.h"
 
-#define MAX_GAMES 32
-
 class GameManager {
 	public:
 		GameManager();
@@ -14,7 +12,8 @@ class GameManager {
 		Game* getGame(int);
 	private:
 		int tracker;
+		static const int maxGameCount = 32;
 		stack<int> *free;
-		Game *games[MAX_GAMES];
+		Game *games[maxGameCount];
 };
 #endif

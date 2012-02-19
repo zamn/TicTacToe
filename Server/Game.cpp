@@ -31,8 +31,9 @@ bool Game::addPlayer(Player* p2) {
 }
 
 Player** Game::getPlayers() {
-	Player** temp;
+	Player** temp = new Player*[2];;
 	if (!full) 
 		temp[0] = p1;
 	return temp;
 }
+

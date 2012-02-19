@@ -22,21 +22,18 @@ GameManager gm;
 
 void *handleCon(void* arg) {
 	Socket sh;
-	char buf[1024];
-	int len = 1024;
-	int con = 0;
-	int gameID;
-	ProtocolHandler ph;
+	int fd = (unsigned long)arg;
 	Player* p1;
-	memset(buf, '\0', 1024);
 	cout << "A new connection has come up!" << endl;
-	if ((p1 = sh.handleInit(*(int*)arg)) != NULL) {
-		if (sh.detChoice(*(int*)arg) == 3) {
+	if ((p1 = sh.handleInit(fd)) != NULL) {
+		if (sh.detChoice(fd) == 3) {
+			int gameID;
 			if ((gameID = gm.addGame(new Game(p1))) != -1) {
-				Game* garr = gm.getGame(gameID);
-				Player** parr = garr->getPlayers();
+				Game* g1 = gm.getGame(gameID);
+				Player** parr = g1->getPlayers();
 				cout << parr[0]->getNick() << endl;
-				ph.sendSuccess(gameID, *(int*)arg);
+				ProtocolHandler ph;
+				ph.sendSuccess(gameID, fd);
 			}
 		}
 	}
@@ -45,51 +42,46 @@ void *handleCon(void* arg) {
 }
 
 int main(void) {
-	struct addrinfo hints;
-	struct addrinfo *res;
-	socklen_t addr_size;
-	struct sockaddr_storage their_addr;
-	int listener;
-	int bnd;
-	int sock, new_fd;
-	int yes = 1;
-	int status;
-	int ret;
-	int *stat;
-	pthread_t tid;
 
+	struct addrinfo hints;
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC; // use ipv4 or ipv6
 	hints.ai_socktype = SOCK_STREAM; // tcp
 	hints.ai_flags = AI_PASSIVE; // fill in ip
 
+	struct addrinfo *res;
+
+	int status;
 	if ((status = getaddrinfo(NULL, "6000", &hints, &res)) != 0) {
 		fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
 		return 1;
 	}
 
-	sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+	int sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (sock == -1) {
 		cout << "error with socket :x" << endl;
 	}
 
-	bnd = bind(sock, res->ai_addr, res->ai_addrlen);
+	int bnd = bind(sock, res->ai_addr, res->ai_addrlen);
 	if (bnd == -1) {
 		cout << "error with bind!" << endl;
 	}
 
-	listener = listen(sock, 20); // listening!
+	int listener = listen(sock, 20); // listening!
 	if (listener == -1) {
 		cout << "error with listener" << endl;
 	}
 
+	socklen_t addr_size;
+	struct sockaddr_storage their_addr;
 	addr_size = sizeof their_addr;
+	int new_fd;
 	while (true) {
 		new_fd = accept(sock, (struct sockaddr *)&their_addr, &addr_size);
-		int con;
-
 		if (new_fd) {
-			if ((ret = pthread_create(&tid, NULL, handleCon, (void*)&new_fd)) != 0) {
+			pthread_t tid;
+			int ret;
+			if ((ret = pthread_create(&tid, NULL, handleCon, (void*)new_fd)) != 0) {
 				cout << "ERROR!" << strerror(ret) << endl;
 				exit(1);
 			}

@@ -2,4 +2,4 @@
 #
 server.o : T3Server.cpp Socket.cpp ProtocolHandler.cpp GameManager.cpp Game.cpp \
 	Player.cpp 
-	g++ T3Server.cpp Socket.cpp ProtocolHandler.cpp GameManager.cpp Game.cpp Player.cpp -lpthread -o server.o
+	g++ -Wall T3Server.cpp Socket.cpp ProtocolHandler.cpp GameManager.cpp Game.cpp Player.cpp -lpthread -o server.o

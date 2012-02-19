@@ -26,7 +26,6 @@ Player* Socket::handleInit(int fd) {
 
 	if (ph->interpret(buf) == 1) {
 		int size = (buf[0] >> 4);
-		int command = (buf[0] & ~240);
 		char symbol = buf[1];
 		string user;
 		for (int i = 2; i < size+2; i++) {
@@ -54,11 +53,11 @@ Player* Socket::handleInit(int fd) {
 
 int Socket::detChoice(int fd) {
 	int len = 1024;
-	int con = 0;
-	int gameID;
+//	int con = 0;
+//	int gameID;
 	char buf[1024];
 	memset(buf, '\0', 1024);
-	char* msg;
+//	char* msg;
 
 	recv(fd, buf, len, 0); 
 	if (ph->interpret(buf) == 3) {

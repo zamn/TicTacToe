@@ -37,8 +37,10 @@ int ProtocolHandler::interpret(char* buffer) {
 }
 
 void ProtocolHandler::sendSuccess(int gid, int fd) {
-	int gameID = gid;
-	cout << gameID << endl;
+	int gameID = ((gid << 4) | 1);
+	char* msg = new char[1];
+	msg[0] = (char)gameID;
+	send(fd, msg, 10, 0);
 }
 
 void ProtocolHandler::sendSuccess(int fd) {
