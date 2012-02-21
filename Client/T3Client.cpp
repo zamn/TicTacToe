@@ -7,14 +7,21 @@
 #include <arpa/inet.h>
 #include <cstdio> // for fgets
 #include <cstdlib> // for system
+#include "GameBoard.h"
+#include "User.h"
+#include "ProtocolHandler.h"
 
 using namespace std;
 
+User* player;
+User* player2;
+GameBoard* gb;
+ProtocolHandler* ph;
+void play(int);
+
 int main(void) {
 	struct addrinfo hints, *res;
-	struct sockaddr_in sa;
 	struct hostent *he;
-	char* dest[32];
 	string ip;
 	string username;
 	char symbol;
@@ -45,6 +52,7 @@ int main(void) {
 		sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	}
 
+	ph = new ProtocolHandler(sockfd);
 	cout << "Successfully connected to server!" << endl;
 	cout << "Please enter your username (Max 12 char): " << endl;
 	cin >> username;
@@ -52,42 +60,53 @@ int main(void) {
 	cout << "Please enter your symbol: " << endl;
 	cin >> symbol;
 
-	char* sendBuffer = new char[1024];
-	char* recBuffer = new char[1024];
-
-	sendBuffer[0] = (char)((username.length() << 4) | 1);
-	sendBuffer[1] = symbol;
-
-	strncpy(sendBuffer + 2, username.c_str(), username.length());
-	send(sockfd, sendBuffer, 1024, NULL);
-	memset(sendBuffer, '\0', 1024);
-	recv(sockfd, recBuffer, 1024, NULL);
-	if ((int)recBuffer[0] == 2) {
+	
+	if (ph->sendInfo(username, symbol) == 2) {
+		player = new User(username, symbol);
+		player2 = new User("????", '?');
 		system("clear");
 		cout << "Your username is set to: " << username << endl;
 		cout << "Your symbol is set to: " << symbol << endl;
 		cout << "Please select an option from the following menu: " << endl;
-		while (option != 3) {
-			cout << "1. Create a new game" << endl;
-			cout << "2. Join a game" << endl;
-			cout << "3. exit " << endl;
-			cout << "\n=> ";
-			cin >> option;
-
-			switch(option) {
-				case 1:
-					sendBuffer[0] = (char)3;
-					send(sockfd, sendBuffer, 10240, NULL);
-					break;
-				case 2:
-					cout << "You chose choice 2" << endl;
-					break;
-			}
-		}
+		cout << "1. Create a new game" << endl;
+		cout << "2. Join a game" << endl;
+		cout << "3. exit " << endl;
+		cout << "\n=> ";
+		cin >> option;
 	}
 	else {
 		cout << "Failed to join game!" << endl;
 	}
-	//recv(
+
+	switch(option) {
+		int gid;
+		case 1:
+			if (ph->create(&gid) == 2) {
+				gb = new GameBoard(player, player2);
+				play(gid);
+			}
+			break;
+		case 2:
+			cout << "Please enter the Game ID: ";
+			cin >> gid;
+
+			if (ph->joinGame(gid) == 2) {
+				cout << "Successfully joined the game!" << endl;
+			}
+			break;
+	}
+	
 	return 0;
+}
+
+void play(int gid) {
+	system("clear");
+	cout << "Game created! Game ID: " << (100 + gid) << endl;
+	int move;
+	cout << "Waiting on an opponent to join...\n";
+	while (!gb->gameOver(player2->getNick())) {
+		gb->draw();
+		cout << "Please enter the spot number where you want to move: ";
+		cin >> move;
+	}
 }

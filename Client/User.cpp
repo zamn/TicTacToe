@@ -1,7 +1,5 @@
 #include "User.h"
 
-using namespace std;
-
 User::User(string nick, char symbol) {
 	this->nick = nick;
 	this->symbol = symbol;
