@@ -4,8 +4,18 @@
 #include <sys/socket.h>
 #include "ProtocolHandler.h"
 
+int interpFail(unsigned char*);
+
 ProtocolHandler::ProtocolHandler(int fd) {
 	this->fd = fd;
+}
+
+int getSize(char* arr) {
+	int count = 0;
+	while (*(arr + count) != '\0') {
+		count++;
+	}
+	return count;
 }
 
 int ProtocolHandler::sendInfo(std::string username, char symbol) {
@@ -30,11 +40,19 @@ int ProtocolHandler::create(int* gid) {
 }
 
 int ProtocolHandler::joinGame(int gid) {
-	char* sendBuffer = new char[10];
+	unsigned char* sendBuffer = new unsigned char[10];
 	memset(sendBuffer, '\0', 10);
 	sendBuffer[0] = (char)4;
 	sendBuffer[1] = (char)gid;
 	send(fd, sendBuffer, 10, NULL);
 	recv(fd, sendBuffer, 10, NULL);
-	return (int)sendBuffer[0];
+	if ((int)sendBuffer[0] != 2) {
+		return interpFail(sendBuffer);
+	}
+	else
+		return (int)sendBuffer[0];
+}
+
+int interpFail(unsigned char* buf) {
+	return (buf[0] >> 4);
 }

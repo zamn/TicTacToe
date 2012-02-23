@@ -13,8 +13,10 @@ char User::getSymbol() {
 	return symbol;
 }
 
-bool turn() {
+bool User::isTurn() {
 	return turn;
 }
 
-
+void User::setTurn(bool t) {
+	turn = t;
+}

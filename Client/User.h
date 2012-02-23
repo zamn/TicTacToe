@@ -10,6 +10,7 @@ class User {
 		string getNick();
 		char getSymbol();
 		bool isTurn();
+		void setTurn(bool);
 
 	private:
 		string nick;
