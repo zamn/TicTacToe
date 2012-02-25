@@ -22,13 +22,13 @@ User* player;
 User* player2;
 GameBoard* gb;
 ProtocolHandler* ph;
+string username;
+char symbol;
 
 int main(void) {
 	struct addrinfo hints, *res;
 	struct hostent *he;
 	string ip;
-	string username;
-	char symbol;
 	int sockfd;
 	int con = 0;
 	memset(&hints, 0, sizeof hints);
@@ -61,20 +61,19 @@ int main(void) {
 	cin >> username;
 	username = username.substr(0, 13);
 	cout << "Please enter your symbol: " << endl;
-	cin >> symbol;
+	string temp;
+	cin >> temp;
+	symbol = temp[0];
 
 	int status = -1;
 	int gid = 0;
 	
 	if (ph->sendInfo(username, symbol) == 2) {
-		while (status == -1) {
+		while (status == -1 ||  status == 3 || status == 4) {
 			system("clear");
 			player = new User(username, symbol);
 			player2 = new User("????", '?');
-			cout << "Your username is set to: " << username << endl;
-			cout << "Your symbol is set to: " << symbol << endl;
 			status = displayMenu(&gid);
-			cout << "STATUS: " << status << endl;
 		}
 		switch (status) {
 			case 1: 
@@ -83,7 +82,7 @@ int main(void) {
 				play(gid, status);
 				break;
 			}
-			case 3: {
+			case 5: {
 				return 0;
 				break;
 			}
@@ -99,10 +98,14 @@ int main(void) {
 int displayMenu(int* gid) {
 	int option = 0;
 	int status = 0;
+	cout << "Your username is set to: " << username << endl;
+	cout << "Your symbol is set to: " << symbol << endl;
 	cout << "Please select an option from the following menu: " << endl;
 	cout << "1. Create a new game" << endl;
 	cout << "2. Join a game" << endl;
-	cout << "3. exit " << endl;
+	cout << "3. Change username" << endl;
+	cout << "4. Change symbol" << endl;
+	cout << "5. exit " << endl;
 	cout << "\n=> ";
 	cin >> option;
 
@@ -130,6 +133,12 @@ int displayMenu(int* gid) {
 						if (result == 1) {
 							cout << "[ERROR] Reason: Invalid Game ID!" << endl;
 						}
+						else if (result == 3) {
+							cout << "[ERROR] Reason: Same symbol as player in game. Change your symbol! Type X to go back and then hit 4." << endl;
+						}
+						else if (result == 4) { 
+							cout << "[ERROR] Reason: Same username as player in game. Change your username! Type X to go back and then hit 3." << endl;
+						}
 						else if (result == 5) {
 							cout << "[ERROR] Reason: Game Full." << endl;
 						}
@@ -151,9 +160,25 @@ int displayMenu(int* gid) {
 			}
 			break;
 		}
-		case 3: { 
-			cout << "Now closing the program." << endl;
+		case 3: {
+			cout << "Please enter your new username (max 12 chars): " << endl;
+			cin >> username;
+			ph->sendNick(username);
 			status = 3;
+			break;
+		}
+		case 4: {
+			string temp;
+			cout << "Please enter your new symbol: " << endl;
+			cin >> temp;
+			symbol = temp[0];
+			ph->sendSymbol(symbol);
+			status = 4;
+			break;
+		}
+		case 5: { 
+			cout << "Now closing the program." << endl;
+			status = 5;
 			break;
 		}
 	}

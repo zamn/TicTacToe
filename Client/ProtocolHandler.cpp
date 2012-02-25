@@ -53,6 +53,20 @@ int ProtocolHandler::joinGame(int gid) {
 		return (int)sendBuffer[0];
 }
 
+void ProtocolHandler::sendNick(std::string nick) {
+	char* sendBuffer = new char[13];
+	sendBuffer[0] = ((nick.length() << 4) | 8);
+	strncpy(sendBuffer + 1, nick.c_str(), nick.length());
+	send(fd, sendBuffer, 13, NULL);
+}
+
+void ProtocolHandler::sendSymbol(char symbol) {
+	char* sendBuffer = new char[2];
+	sendBuffer[0] = (char)9;
+	sendBuffer[1] = symbol;
+	send(fd, sendBuffer, 13, 0);
+}
+
 int interpFail(unsigned char* buf) {
 	return (buf[0] >> 4);
 }
