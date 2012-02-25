@@ -8,7 +8,7 @@ class Game {
 	public:
 		Game(Player*);
 		bool sendMove(string, int);
-		bool addPlayer(Player*);
+		int addPlayer(Player*);
 		int gameID;
 		Player** getPlayers();
 	private:

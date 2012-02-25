@@ -1,9 +1,11 @@
 # This is the protocol format
 
-1 CONNECT <SYMBOL> <NICK> - [LENT0001][symbol][nick]
-2 SUCCESS - [GAID0010]-> Returned after successful event
+1 CONNECT <SYMBOL> <NICK> - [LENT0001][symbol][n][i][c][k]
+2 SUCCESS - [00000010][GAMEID] -> Returned after successful event
 3 CREATE - [00000011]
-7 FAIL - [REASON1001] -> Returned after failed event
-4 JOIN <GAMEID> - [EXTE0100][GAMEID] 
+7 FAIL - [RSON1001] -> Returned after failed event
+4 JOIN <GAMEID> - [00000100][GAMEID] 
 5 MOVE <POS> <GAMEID> - [EXTE0101][GAMEID]
 6 GET <GAMEID> - [EXTE0110][GAMEID]
+8 SETNICK <NICK> - [LENT1010][n][i][c][k]
+9 SETSYM <SYMBOL> - [00001100][symbol]

@@ -10,8 +10,11 @@ using namespace std;
 class Socket {
 	public:
 		Player* handleInit(int);
-		int detChoice(int);
+		int detChoice(int, int*);
+		string getNick();
+		char getSymbol();
 	private:
 		ProtocolHandler* ph;
+		string temp;
 };
 #endif

@@ -6,8 +6,6 @@
 #include "GameManager.h"
 #include "Player.h"
 
-using namespace std;
-
 /* 
  * Handle Intial Connection - handleInit(fd)
  * This method handles the initial connectiong making sure
@@ -18,7 +16,7 @@ using namespace std;
 
 
 Player* Socket::handleInit(int fd) {
-	char buf[1024];
+	unsigned char buf[1024];
 	memset(buf, '\0', 1024);
 	int len = 1024;
 	int con = 0; 
@@ -31,8 +29,8 @@ Player* Socket::handleInit(int fd) {
 		for (int i = 2; i < size+2; i++) {
 			user += buf[i];
 		}
-		cout << "User: " <<  user << endl;
-		cout << "Symbol: " << symbol << endl;
+		std::cout << "User: " <<  user << std::endl;
+		std::cout << "Symbol: " << symbol << std::endl;
 		ph->sendSuccess(fd);
 		return new Player(fd, user, symbol);
 	}
@@ -51,19 +49,42 @@ Player* Socket::handleInit(int fd) {
  *
 */
 
-int Socket::detChoice(int fd) {
+int Socket::detChoice(int fd, int *gid) {
 	int len = 1024;
-//	int con = 0;
-//	int gameID;
-	char buf[1024];
+	unsigned char buf[1024];
 	memset(buf, '\0', 1024);
-//	char* msg;
 
 	recv(fd, buf, len, 0); 
-	if (ph->interpret(buf) == 3) {
+	int result = ph->interpret(buf);
+	if (result == 3) {
 		return 3;
+	}
+	else if (result == 4) {
+		*gid = buf[1];
+		return 4;
+	}
+	else if (result == 8) {
+		temp = "";
+		int count = (buf[0] >> 4);
+		for (int i = 1; i <= count; i++) {
+			temp += buf[i];
+		}
+		return 8;
+	}
+	else if (result == 9) {
+		temp = "";
+		temp[0] = buf[1];
+		return 9;
 	}
 
 	return -1;
-	
+}
+
+string Socket::getNick() {
+	cout << "Sending: " << temp << endl;
+	return temp;
+}
+
+char Socket::getSymbol() {
+	return temp[0];
 }

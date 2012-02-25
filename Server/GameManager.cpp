@@ -1,5 +1,6 @@
 #include <stack>
 #include <pthread.h>
+#include <cstring>
 #include "Game.h"
 #include "GameManager.h"
 
@@ -8,6 +9,7 @@ pthread_mutex_t trackerinc = PTHREAD_MUTEX_INITIALIZER;
 GameManager::GameManager() {
 	tracker = 0;
 	free = new stack<int>();
+	memset(games, '\0', maxGameCount);
 }
 
 bool GameManager::exists(int n) {
@@ -40,5 +42,8 @@ int GameManager::addGame(Game* g) {
 }
 
 Game* GameManager::getGame(int n) {
-	return games[n];
+	if (games[n] != '\0')
+		return games[n];
+	else
+		return '\0';
 }

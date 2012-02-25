@@ -11,6 +11,8 @@ class Player {
 		char getSymbol();
 		string getNick();	
 		int getFD();
+		void setNick(string);
+		void setSymbol(char);
 	private:
 		int fd;
 		string nick;

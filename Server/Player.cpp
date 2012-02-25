@@ -17,6 +17,14 @@ string Player::getNick() {
 	return nick;
 }
 
+void Player::setSymbol(char c) {
+	symbol = c;
+}
+
+void Player::setNick(string str) {
+	nick = str;
+}
+
 int Player::getFD() {
 	return fd;
 }

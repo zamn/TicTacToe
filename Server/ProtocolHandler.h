@@ -7,7 +7,8 @@ using namespace std;
 
 class ProtocolHandler {
 	public:
-		int interpret(char*);
+		int interpret(unsigned char*);
+		void sendFail(int, int);
 		void sendSuccess(int, int);
 		void sendSuccess(int);
 };

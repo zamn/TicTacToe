@@ -19,25 +19,74 @@
 using namespace std;
 
 GameManager gm;
+ProtocolHandler ph;
 
 void *handleCon(void* arg) {
 	Socket sh;
 	int fd = (unsigned long)arg;
 	Player* p1;
 	cout << "A new connection has come up!" << endl;
-	if ((p1 = sh.handleInit(fd)) != NULL) {
-		if (sh.detChoice(fd) == 3) {
-			int gameID;
-			if ((gameID = gm.addGame(new Game(p1))) != -1) {
-				Game* g1 = gm.getGame(gameID);
-				Player** parr = g1->getPlayers();
-				cout << parr[0]->getNick() << endl;
-				ProtocolHandler ph;
-				ph.sendSuccess(gameID, fd);
+	if ((p1 = sh.handleInit(fd)) != '\0') {
+		int gameID;
+		int choice;
+	       	while ((choice = sh.detChoice(fd, &gameID)) != -1) {
+			cout << choice << endl;
+			if (choice == 3) {
+				if ((gameID = gm.addGame(new Game(p1))) != -1) {
+					std::cout << "New game has been created!" << endl;
+					ph.sendSuccess(fd, gameID+1);
+				}
+			}
+			else if (choice == 4) {
+				cout << "Connection has chosen 2." << endl;
+				Game* g;
+				if ((g = gm.getGame(gameID-1)) != '\0') {
+					int result;
+					if ((result = g->addPlayer(p1)) == 0) {
+						cout << "Successfully added to game: " << gameID << endl ;
+						ph.sendSuccess(fd);
+					}
+					else if (result == 3) {
+						cout << "Invalid symbol!" << endl;
+						ph.sendFail(fd, 3);
+					}
+					else if (result == 4) {
+						cout << "Same nick! BAD!" << endl;
+						ph.sendFail(fd, 4);
+					}
+					else if (result == 5)  {
+						cout << "Game is full " << endl;
+						ph.sendFail(fd, 5);
+					}
+				}
+				else {
+					cout << "Invalid Game ID!" << endl;
+					ph.sendFail(fd, 1);
+				}
+			}
+			else if (choice == 8) {
+				string nick = sh.getNick();
+				if (!nick.empty())
+					p1->setNick(nick);
+				cout << "Changed persons name to: " << nick << endl;
+			}
+			else if (choice == 9) {
+				char sym = sh.getSymbol();
+				if (sym != ' ') {
+					p1->setSymbol(sym);
+				}
+				cout << "Changed persons symbol to: " << sym << endl;
+			}
+			else if (choice == -1) {
+				cout << "Person disconnected!" << endl;
+			}
+			else {
+				ph.sendFail(fd, 0);
 			}
 		}
 	}
 	cout << "HE QUIT! " << endl;
+	close(fd);
 	return 0;
 }
 
