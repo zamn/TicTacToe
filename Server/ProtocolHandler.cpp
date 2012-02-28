@@ -71,3 +71,24 @@ void ProtocolHandler::sendSuccess(int fd) {
 	int len = 10;
 	send(fd, msg, len, 0);
 }
+
+void ProtocolHandler::sendInfo(Game* g) {
+	char* sendBuffer = new char[20];
+	Player** players = g->getPlayers();
+	string temp;
+	for (int i = 0; i < 2; i++) {
+		sendBuffer[0] = ((players[i]->getNick().length() << 4) | 1);
+		sendBuffer[1] =  players[i]->getSymbol();
+		for (unsigned int j = 0; j < players[i]->getNick().length(); j++) {
+			temp += players[i]->getNick()[j];
+		}
+		strncpy(sendBuffer + 2, temp.c_str(), temp.length());
+		cout << "Temp for : " << i << " is: " << temp << endl;
+		cout << "Symbol for: " << i << " is: " << sendBuffer[1] << endl;
+		if (i == 0)
+			send(players[i+1]->getFD(), sendBuffer, 20, 0); 
+		else
+			send(players[i-1]->getFD(), sendBuffer, 20, 0); 
+		temp = "";
+	}
+}

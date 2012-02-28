@@ -2,6 +2,7 @@
 #define _PROTOCOLHANDLER_H
 #include <iostream>
 #include <sys/socket.h>
+#include "Game.h"
 
 using namespace std;
 
@@ -11,5 +12,6 @@ class ProtocolHandler {
 		void sendFail(int, int);
 		void sendSuccess(int, int);
 		void sendSuccess(int);
+		void sendInfo(Game*);
 };
 #endif
