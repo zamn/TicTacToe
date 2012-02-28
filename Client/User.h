@@ -9,6 +9,8 @@ class User {
 		User(string, char);
 		string getNick();
 		char getSymbol();
+		void setNick(string);
+		void setSymbol(char);
 		bool isTurn();
 		void setTurn(bool);
 

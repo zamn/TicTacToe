@@ -13,6 +13,14 @@ char User::getSymbol() {
 	return symbol;
 }
 
+void User::setNick(string str) {
+	nick = str;
+}
+
+void User::setSymbol(char s) {
+	symbol = s;
+}
+
 bool User::isTurn() {
 	return turn;
 }

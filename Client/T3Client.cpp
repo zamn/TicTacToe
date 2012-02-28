@@ -191,15 +191,27 @@ void play(int gid, int status) {
 		case 1: {
 			cout << "Game created! Game ID: " << gid << endl;
 			cout << "Waiting on an opponent to join...\n";
+			ph->getOpponent(player2);
+			break;
 		}
 		case 2: {
 			cout << "Successfully joined Game ID: " << gid <<  endl;
+			ph->getOpponent(player2);
 		}
 	}
+	system("clear");
+	cout << "Player 1: " << player->getNick() << " - Symbol: " << player->getSymbol() << endl;
+	cout << "Player 2: " << player2->getNick() << " - Symbol: " << player2->getSymbol() << endl;
 	int move;
 	while (!gb->gameOver(player2->getNick())) {
 		gb->draw();
 		cout << "Please enter the spot number where you want to move: ";
 		cin >> move;
+		int result;
+		while ((result = gb->update(move, player)) != 1) {
+			cout << "Please enter the spot number where you want to move: ";
+			cin >> move;
+		}
+		ph->sendMove(move);
 	}
 }

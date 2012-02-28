@@ -1,5 +1,6 @@
 #ifndef _PROTOCOLHANDLER_H
 #define _PROTOCOLHANDLER_H
+#include "User.h"
 
 class ProtocolHandler {
 	public:
@@ -9,6 +10,8 @@ class ProtocolHandler {
 		int joinGame(int);
 		void sendNick(std::string);
 		void sendSymbol(char);
+		bool getOpponent(User*);
+		void sendMove(int);
 	private:
 		int fd;
 };
