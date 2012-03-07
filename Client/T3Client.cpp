@@ -16,6 +16,7 @@
 using namespace std;
 
 void play(int, int);
+void displayPlayers();
 int displayMenu(int*);
 
 User* player;
@@ -200,18 +201,50 @@ void play(int gid, int status) {
 		}
 	}
 	system("clear");
-	cout << "Player 1: " << player->getNick() << " - Symbol: " << player->getSymbol() << endl;
-	cout << "Player 2: " << player2->getNick() << " - Symbol: " << player2->getSymbol() << endl;
 	int move;
-	while (!gb->gameOver(player2->getNick())) {
+	if (status == 2) {
+		displayPlayers();
+		gb->draw();
+		cout << "Waiting on other players move..." << endl;
+		gb->update(ph->getMove(), *player2);
+		system("clear");
+	}
+
+	while (1) {
+		displayPlayers();
 		gb->draw();
 		cout << "Please enter the spot number where you want to move: ";
 		cin >> move;
 		int result;
-		while ((result = gb->update(move, player)) != 1) {
+		while ((result = gb->update(move, *player)) != 1) {
+			if (result == -1) {
+				cout << "[ERROR] Spot already taken." << endl;
+			}
 			cout << "Please enter the spot number where you want to move: ";
 			cin >> move;
 		}
+		system("clear");
+		displayPlayers();
 		ph->sendMove(move);
+		gb->checkWinner();
+		gb->draw();
+		if (gb->gameOver(player->getNick()) == 1) {
+			break;
+		}
+		cout << "Waiting on other players move..." << endl;
+		gb->update(ph->getMove(), *player2);
+		system("clear");
+		gb->checkWinner();
+		if (gb->gameOver(player2->getNick()) == 1) {
+			displayPlayers();
+			gb->draw();
+			break;
+		}
 	}
+	cout << "Game over. Now ending...(for now)" << endl;
+}
+
+void displayPlayers() {
+		cout << "Player 1: " << player->getNick() << " - Symbol: " << player->getSymbol() << endl;
+		cout << "Player 2: " << player2->getNick() << " - Symbol: " << player2->getSymbol() << endl;
 }

@@ -28,19 +28,31 @@ void GameBoardTest::testUpdate() {
 void GameBoardTest::testCheckWinner() {
 	cout << "Checking Row Winning" << endl;
 	CPPUNIT_ASSERT(gameboard->update(1,*player1) == 1);
+	gameboard->draw();
 	CPPUNIT_ASSERT(gameboard->update(7,*player2) == 1);
+	gameboard->draw();
 	CPPUNIT_ASSERT(gameboard->update(2,*player1) == 1);
+	gameboard->draw();
 	CPPUNIT_ASSERT(gameboard->update(6,*player2) == 1);
+	gameboard->draw();
 	CPPUNIT_ASSERT(gameboard->update(3,*player1) == 1);
+	gameboard->draw();
 	CPPUNIT_ASSERT(gameboard->checkWinner() == player1->getNick());
 	gameboard->reset();
+	gameboard->draw();
 	cout << "Checking Forward Diagnol Winning" << endl;
-	CPPUNIT_ASSERT(gameboard->update(1, *player1) == 0);
+	CPPUNIT_ASSERT(gameboard->update(1, *player1) == 1);
+	gameboard->draw();
 	CPPUNIT_ASSERT(gameboard->update(2, *player2) == 1);
+	gameboard->draw();
 	CPPUNIT_ASSERT(gameboard->update(5, *player1) == 1);
+	gameboard->draw();
 	CPPUNIT_ASSERT(gameboard->update(3, *player2) == 1);
+	gameboard->draw();
 	CPPUNIT_ASSERT(gameboard->update(9, *player1) == 1);
+	gameboard->draw();
 	CPPUNIT_ASSERT(gameboard->checkWinner() == player1->getNick());
+	gameboard->draw();
 	gameboard->reset();
 }
 

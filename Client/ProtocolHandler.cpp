@@ -87,7 +87,18 @@ bool ProtocolHandler::getOpponent(User* p2) {
 
 void ProtocolHandler::sendMove(int move) {
 	char* sendBuffer = new char[2];
-// do diz tomorrow
+	std::cout << "Got: " << move << std::endl;
+	sendBuffer[0] = (char)((move << 4) | 5);
+	std::cout << "Sending move: " << (int)((sendBuffer[0] & 240) >> 4) << std::endl;
+	send(fd, sendBuffer, 10, 0);
+	// do diz tomorrow
+}
+
+int ProtocolHandler::getMove() {
+	char* recvBuffer = new char[10];
+	recv(fd, recvBuffer, 10, 0);
+	std::cout << "move recv: " << ((recvBuffer[0] & 240) >> 4) << std::endl;
+	return ((recvBuffer[0] & 240) >> 4);
 }
 
 int interpFail(unsigned char* buf) {

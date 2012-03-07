@@ -8,6 +8,7 @@ class ProtocolHandler {
 		int sendInfo(std::string, char);
 		int create(int*);
 		int joinGame(int);
+		int getMove();
 		void sendNick(std::string);
 		void sendSymbol(char);
 		bool getOpponent(User*);

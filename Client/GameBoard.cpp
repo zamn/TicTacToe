@@ -17,40 +17,48 @@ GameBoard::~GameBoard() {
 }
 
 string GameBoard::checkWinner() {
-	char prev = board[0];
-	int cnt = 0;
-	// Diagnols!
-	if ((board[1] == board[5]) && (board[1] == board[9]) && (board[9] == board[5])) {
+	// Diagonals!
+	if ((board[0] == board[4]) && (board[0] == board[8]) && (board[8] == board[4])) {
 		over = true;
-		if (board[1] == player1->getSymbol()) 
+		if (board[0] == player1->getSymbol()) 
 			return player1->getNick();
-		else if (board[1] == player2->getSymbol())
+		else 
 			return player2->getNick();
 	}
-	else if ((board[3] == board[5]) && (board[3] == board[7]) && (board[5] == board[7])) {
+	else if ((board[2] == board[4]) && (board[2] == board[6]) && (board[4] == board[6])) {
 		over = true;
-		if (board[3] == player1->getSymbol())
+		if (board[2] == player1->getSymbol())
 			return player1->getNick();
-		else if (board[3] == player2->getSymbol())
+		else
 			return player2->getNick();
 	}
 
-	for (int i = 0; i < 10; i++) {
-		if (board[i] == prev) {
-			cnt++;
-			if (cnt == 3) {
-				over = true;
-				if (board[i] == player1->getSymbol())
-					return player1->getNick();
-				else if (board[i] == player2->getSymbol())
-					return player2->getNick();
+	// checking in a row
+	for (int i = 0; i < 7; i += 3) {
+		if ((board[i] == board[i+1]) && (board[i] == board[i+2]) && (board[i+1] == board[i+2])) {
+			over = true;
+			if (board[i] == player1->getSymbol()) {
+				return player1->getNick();
+			}
+			else {
+				return player2->getNick();
 			}
 		}
-		else {
-			prev = board[i];
-			cnt = 0;
+	}
+
+	// checking column matching
+	for (int i = 0; i < 3; i++) {
+		if ((board[i] == board[i+3]) && (board[i] == board[i+6]) && (board[i+3] == board[i+6])) {
+			over = true;
+			if (board[i] == player1->getSymbol()) {
+				return player1->getNick();
+			}
+			else {
+				return player2->getNick();
+			}
 		}
 	}
+
 	return "";	
 }
 
@@ -77,7 +85,6 @@ int GameBoard::update(int p, User &u) {
 			if (spotsLeft == 0)
 				return 2;
 			last = u.getNick();
-			draw();
 			return 1;
 		}
 	}
@@ -113,4 +120,5 @@ void GameBoard::reset() {
 		board[i] = (char)((int)'1'+i);
 	}
 	spotsLeft = 9;
+	last = "";
 }
