@@ -33,6 +33,7 @@ int Game::addPlayer(Player* p2) {
 		else {
 			this->p2 = p2;
 			full = true;
+			std::cout << "Game is now full!" << endl;
 			return 0;
 		}
 	}
@@ -48,6 +49,8 @@ Player** Game::getPlayers() {
 	}
 	else
 		temp[0] = p1;
+
+	std::cout << "testing: " << p1->getNick() << std::endl;
 	return temp;
 }
 

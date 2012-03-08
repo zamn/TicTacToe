@@ -13,6 +13,7 @@ GameManager::GameManager() {
 }
 
 bool GameManager::exists(int n) {
+	cout << "WHAT THE FUCK IS TRUE? " << true << endl;
 	if (games[n] != '\0') {
 		return true;
 	}

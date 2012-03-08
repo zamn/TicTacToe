@@ -49,7 +49,7 @@ Player* Socket::handleInit(int fd) {
  *
 */
 
-int Socket::detChoice(int fd, int *gid) {
+int Socket::detChoice(int fd, int* gid) {
 	int len = 1024;
 	unsigned char buf[1024];
 	memset(buf, '\0', 1024);
@@ -62,6 +62,11 @@ int Socket::detChoice(int fd, int *gid) {
 	else if (result == 4) {
 		*gid = buf[1];
 		return 4;
+	}
+	else if (result == 5) {
+		*gid = ((buf[0] & 240) >> 4); //gid = move here
+		cout << "gid here: " << *gid << endl;
+		return 5;
 	}
 	else if (result == 8) {
 		temp = "";

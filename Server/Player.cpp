@@ -25,6 +25,15 @@ void Player::setNick(string str) {
 	nick = str;
 }
 
+void Player::setGID(int game) {
+	cout << "IS SETGID BEING CLALED? " << game << endl;
+	gameID = game;
+}
+
 int Player::getFD() {
 	return fd;
+}
+
+int Player::getGID() {
+	return gameID;
 }

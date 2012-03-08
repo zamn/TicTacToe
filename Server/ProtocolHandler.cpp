@@ -24,6 +24,9 @@ int ProtocolHandler::interpret(unsigned char* buffer) {
 			return 1;
 		}
 	}
+	else if (command == 5) {
+		return 5;
+	}
 	else if (command == 8) {
 		if (getSize(buffer) >= 2) {
 			return 8;
@@ -91,4 +94,11 @@ void ProtocolHandler::sendInfo(Game* g) {
 			send(players[i-1]->getFD(), sendBuffer, 20, 0); 
 		temp = "";
 	}
+}
+
+void ProtocolHandler::sendMove(Player* p, int move) {
+	char* sendBuffer = new char[2];
+	sendBuffer[0] = ((move << 4) | 5);
+	cout << "sending to: " << p->getNick() << " pos: " << move << endl;
+	send(p->getFD(), sendBuffer, 2, 0);
 }

@@ -35,6 +35,7 @@ void *handleCon(void* arg) {
 				if ((gameID = gm.addGame(new Game(p1))) != -1) {
 					std::cout << "New game has been created!" << endl;
 					ph.sendSuccess(fd, gameID+1);
+					p1->setGID(gameID);
 				}
 			}
 			else if (choice == 4) {
@@ -46,6 +47,7 @@ void *handleCon(void* arg) {
 						cout << "Successfully added to game: " << gameID << endl ;
 						ph.sendSuccess(fd);
 						ph.sendInfo(g);
+						p1->setGID(gameID-1);
 					}
 					else if (result == 3) {
 						cout << "Invalid symbol!" << endl;
@@ -64,6 +66,16 @@ void *handleCon(void* arg) {
 					cout << "Invalid Game ID!" << endl;
 					ph.sendFail(fd, 1);
 				}
+			}
+			else if (choice == 5) {
+				Player** players = gm.getGame(p1->getGID())->getPlayers();
+				if (players[0]->getSymbol() == p1->getSymbol()) {
+					ph.sendMove(players[1], gameID);
+				}
+				else {
+					ph.sendMove(players[0], gameID);
+				}
+				// IMPLEMENT SEND MOVE AND CHECK THIS
 			}
 			else if (choice == 8) {
 				string nick = sh.getNick();
