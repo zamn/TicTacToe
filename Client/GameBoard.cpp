@@ -80,7 +80,7 @@ int GameBoard::update(int p, User &u) {
 		}
 		else {
 			board[p-1] = u.getSymbol();
-			cout << u.getNick() << " entered " << u.getSymbol() << " at postiion " << p << endl;
+			//cout << u.getNick() << " entered " << u.getSymbol() << " at postiion " << p << endl;
 			spotsLeft--;
 			if (spotsLeft == 0)
 				return 2;

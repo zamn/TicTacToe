@@ -15,7 +15,7 @@
 
 using namespace std;
 
-void play(int, int);
+int play(int, int);
 void displayPlayers();
 int displayMenu(int*);
 
@@ -70,22 +70,34 @@ int main(void) {
 	int gid = 0;
 	
 	if (ph->sendInfo(username, symbol) == 2) {
-		while (status == -1 ||  status == 3 || status == 4) {
-			system("clear");
-			player = new User(username, symbol);
-			player2 = new User("????", '?');
-			status = displayMenu(&gid);
-		}
-		switch (status) {
-			case 1: 
-			case 2: {
-				gb = new GameBoard(player, player2);
-				play(gid, status);
-				break;
+		// SO MANY WHILE LOOPS!!!
+		while (1) {
+			while (status == -1 ||  status == 3 || status == 4) {
+				system("clear");
+				player = new User(username, symbol);
+				player2 = new User("????", '?');
+				status = displayMenu(&gid);
 			}
-			case 5: {
-				return 0;
-				break;
+			switch (status) {
+				case 1: 
+				case 2: {
+					gb = new GameBoard(player, player2);
+					// if both people want to play again
+					// then recreate the game.
+					// if neither want to play again then
+					// bring them back to the menu and
+					// destroy game.
+					// if 1 wants to play again and the other
+					// doesnt then recreate the game with
+					// the player being 'creator'
+					if (play(gid, status) == 1) {
+					}
+					break;
+				}
+				case 5: {
+					return 0;
+					break;
+				}
 			}
 		}
 	}
@@ -186,7 +198,18 @@ int displayMenu(int* gid) {
 	return status;
 }
 
-void play(int gid, int status) {
+
+/* 
+ * This function is repsonsible for displaying the current game and sending moves back and forth.
+ * Once the 2 players are finished playing then they are asked if they would like to play again.
+ * RETURN VALUES:
+ * 	0 == Return back to menu
+ * 	1 == Play again!
+ * 	-1 == opponent disconnected
+*/
+
+int play(int gid, int status) {
+	string winner = "";
 	system("clear");
 	switch (status) {
 		case 1: {
@@ -210,6 +233,9 @@ void play(int gid, int status) {
 		system("clear");
 	}
 
+	bool tie = false;
+	char dec;
+
 	while (1) {
 		displayPlayers();
 		gb->draw();
@@ -220,31 +246,58 @@ void play(int gid, int status) {
 			if (result == -1) {
 				cout << "[ERROR] Spot already taken." << endl;
 			}
+			else if (result == 2) {
+				tie = true;
+				break;
+			}
 			cout << "Please enter the spot number where you want to move: ";
 			cin >> move;
 		}
 		system("clear");
 		displayPlayers();
 		ph->sendMove(move);
-		gb->checkWinner();
 		gb->draw();
-		if (gb->gameOver(player->getNick()) == 1) {
+		if (tie) {
+			cout << "Tie game! Good job derps." << endl;
 			break;
+		}
+		if (gb->getSpots() <= 4) {
+			winner = gb->checkWinner();
+			if (strcmp(winner.c_str(), "") != 0) {
+				gb->gameOver(winner);
+				break;
+			}
 		}
 		cout << "Waiting on other players move..." << endl;
-		gb->update(ph->getMove(), *player2);
-		system("clear");
-		gb->checkWinner();
-		if (gb->gameOver(player2->getNick()) == 1) {
-			displayPlayers();
-			gb->draw();
+		if (gb->update(ph->getMove(), *player2) == 2) {
+			cout << "Tie game! Good job dar.." << endl;
 			break;
 		}
+		system("clear");
+		if (gb->getSpots() <= 4) {
+			winner = gb->checkWinner();
+			if (strcmp(winner.c_str(), "") != 0) {
+				gb->gameOver(winner);
+				break;
+			}
+		}
 	}
-	cout << "Game over. Now ending...(for now)" << endl;
+	cout << "Play again? (y/n)" << endl;
+	cin >> dec;
+	dec = tolower(dec);
+	while (dec != 'n' && dec != 'y') {
+		cout << "Invalid choice!" << endl;
+		cout << "Play again? (y/n)" << endl;
+		cin >> dec;
+		dec = tolower(dec);
+	}
+	if (dec == 'y') {
+		return 1;
+	}
+	return 0;
 }
 
 void displayPlayers() {
-		cout << "Player 1: " << player->getNick() << " - Symbol: " << player->getSymbol() << endl;
-		cout << "Player 2: " << player2->getNick() << " - Symbol: " << player2->getSymbol() << endl;
+		cout << "You: " << player->getNick() << " - Symbol: " << player->getSymbol() << endl;
+		cout << "Opponent: " << player2->getNick() << " - Symbol: " << player2->getSymbol() << endl;
 }
