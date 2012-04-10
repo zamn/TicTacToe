@@ -7,6 +7,7 @@ Player::Player(int fd, string nick, char symbol) {
 	this->fd = fd;
 	this->nick = nick;
 	this->symbol = symbol;
+	gameID = -1;
 }
 
 char Player::getSymbol() {

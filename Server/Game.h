@@ -7,9 +7,12 @@ using namespace std;
 class Game {
 	public:
 		Game(Player*);
+		~Game();
 		bool sendMove(string, int);
 		int addPlayer(Player*);
+		bool removePlayer(Player*);
 		int gameID;
+		Player* getOpposite(Player*);
 		Player** getPlayers();
 	private:
 		bool full;
