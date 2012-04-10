@@ -92,6 +92,8 @@ int main(void) {
 					// the player being 'creator'
 					if (play(gid, status) == 1) {
 					}
+					else {
+					}
 					break;
 				}
 				case 5: {
@@ -258,6 +260,7 @@ int play(int gid, int status) {
 		ph->sendMove(move);
 		gb->draw();
 		if (tie) {
+			system("clear");
 			cout << "Tie game! Good job derps." << endl;
 			break;
 		}
@@ -277,6 +280,8 @@ int play(int gid, int status) {
 		if (gb->getSpots() <= 4) {
 			winner = gb->checkWinner();
 			if (strcmp(winner.c_str(), "") != 0) {
+				displayPlayers();
+				gb->draw();
 				gb->gameOver(winner);
 				break;
 			}

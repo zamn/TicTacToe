@@ -75,7 +75,6 @@ void *handleCon(void* arg) {
 				else {
 					ph.sendMove(players[0], gameID);
 				}
-				// IMPLEMENT SEND MOVE AND CHECK THIS
 			}
 			else if (choice == 8) {
 				string nick = sh.getNick();
@@ -99,6 +98,7 @@ void *handleCon(void* arg) {
 		}
 	}
 	cout << "HE QUIT! " << endl;
+	// implement deleting stuff here...
 	close(fd);
 	return 0;
 }

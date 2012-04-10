@@ -26,7 +26,6 @@ void Player::setNick(string str) {
 }
 
 void Player::setGID(int game) {
-	cout << "IS SETGID BEING CLALED? " << game << endl;
 	gameID = game;
 }
 
