@@ -12,6 +12,9 @@ class Game {
 		int addPlayer(Player*);
 		bool removePlayer(Player*);
 		int gameID;
+		bool exists(Player*);
+		bool isFull();
+		string getOwner();
 		Player* getOpposite(Player*);
 		Player** getPlayers();
 	private:

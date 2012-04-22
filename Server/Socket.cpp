@@ -68,6 +68,9 @@ int Socket::detChoice(int fd, int* gid) {
 		cout << "gid here: " << *gid << endl;
 		return 5;
 	}
+	else if (result == 6) {
+		return 6;
+	}
 	else if (result == 8) {
 		temp = "";
 		int count = (buf[0] >> 4);

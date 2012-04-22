@@ -27,16 +27,20 @@ void *handleCon(void* arg) {
 	int fd = (unsigned long)arg;
 	Player* p1;
 	cout << "A new connection has come up!" << endl;
-	if ((p1 = sh.handleInit(fd)) != '\0') {
-		int gameID;
-		int choice;
+	int choice;
+	if ((p1 = sh.handleInit(fd)) != 0) {
+		int gameID = -1;
 	       	while ((choice = sh.detChoice(fd, &gameID)) != -1) {
 			cout << choice << endl;
 			if (choice == CREATE_GAME) {
 				if ((gameID = gm.addGame(new Game(p1))) != -1) {
+					std::cout << "gamied: " << gameID << endl;
 					std::cout << "New game has been created!" << endl;
 					ph.sendSuccess(fd, gameID+1);
 					p1->setGID(gameID);
+				}
+				else {
+					ph.sendFail(fd, 7);
 				}
 			}
 			else if (choice == JOIN_GAME) {
@@ -59,8 +63,13 @@ void *handleCon(void* arg) {
 						ph.sendFail(fd, 4);
 					}
 					else if (result == 5)  {
-						cout << "Game is full " << endl;
-						ph.sendFail(fd, 5);
+						if (g->exists(p1)) { 
+							ph.sendInfo(g);
+						}
+						else {
+							cout << "Game is full " << endl;
+							ph.sendFail(fd, 5);
+						}
 					}
 				}
 				else {
@@ -85,29 +94,39 @@ void *handleCon(void* arg) {
 				}
 				cout << "Changed persons symbol to: " << sym << endl;
 			}
-			else if (choice == DISCONNECT) {
+			else if (choice == LIST) {
+				ph.listPlayers(fd, &gm);
+			}
+			else if (choice == LEAVE) {
 				if (p1->getGID() != -1) {
 					Player* player = gm.getGame(p1->getGID())->getOpposite(p1);
 					gm.getGame(p1->getGID())->removePlayer(p1);
 					ph.sendFail(player->getGID(), 6);
 				}
-				else {
-				}
-				cout << "Person disconnected!" << endl;
+				// on rejoin dont remove game, just remove player
+				// then re-add player with same game id
 			}
 			else {
 				ph.sendFail(fd, 0);
 			}
 		}
 	}
-	cout << "HE QUIT! " << endl;
+	if ((p1 != NULL) && (p1->getGID() != -1) && (gm.getGame(p1->getGID())->isFull())) {
+		Player* player = gm.getGame(p1->getGID())->getOpposite(p1);
+		int gid = p1->getGID();
+		gm.getGame(gid)->removePlayer(p1);
+		ph.sendFail(player->getFD(), 6);
+		gm.removeGame(gid);
+		cout << "Player has quit!" << endl;
+	}
+	cout << "HE QUIT! " << choice <<  endl;
 	// implement deleting stuff here...
+	// push game on to stack once its done
 	close(fd);
 	return 0;
 }
 
 int main(void) {
-
 	struct addrinfo hints;
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC; // use ipv4 or ipv6

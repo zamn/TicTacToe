@@ -10,10 +10,12 @@ class GameManager {
 		bool exists(int);
 		int addGame(Game*);
 		Game* getGame(int);
+		bool removeGame(int);
+		int getLength();
 	private:
 		int tracker;
-		static const int maxGameCount = 32;
+		static const int maxGameCount = 33;
 		stack<int> *free;
-		Game *games[maxGameCount];
+		Game* games[maxGameCount];
 };
 #endif

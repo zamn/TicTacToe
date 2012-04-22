@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include "Game.h"
 #include "Player.h"
+#include "GameManager.h"
 
 using namespace std;
 
@@ -15,5 +16,6 @@ class ProtocolHandler {
 		void sendSuccess(int, int);
 		void sendSuccess(int);
 		void sendInfo(Game*);
+		void listPlayers(int, GameManager*);
 };
 #endif

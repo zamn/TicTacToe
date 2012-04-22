@@ -1,18 +1,21 @@
-# This is the protocol format
+# This is the protocol Format
 
 1 CONNECT <SYMBOL> <NICK> - [LENT0001][symbol][n][i][c][k]
 2 SUCCESS - [00000010][GAMEID] -> Returned after successful event
 3 CREATE - [00000011]
-7 FAIL - [RSON1001] -> Returned after failed event
+4 JOIN <GAMEID> - [00000100][GAMEID]
+-- server sends information to both players on successful join in same format as CONNECT
+5 MOVE <POS> - [SPOT0101]
+6 LIST - [00000110]
+-- [LENT-NUMP][GAMEID][n][i][c][k]
+7 FAIL - [RSON0111] -> Returned after failed event
 	0 -- Invalid Choice.
 	1 -- Invalid GameID.
 	3 -- Invalid Symbol
 	4 -- Invalid Nick
 	5 -- Game Full.
 	6 -- Opponent Left.
-4 JOIN <GAMEID> - [00000100][GAMEID] 
-5 MOVE <POS> - [SPOT0101]
-6 GET <GAMEID> - [00000110][GAMEID]
-8 SETNICK <NICK> - [LENT1010][n][i][c][k]
-9 SETSYM <SYMBOL> - [00001011][symbol]
-10 LEAVE - [00001100]
+	7 -- No more games available.
+8 SETNICK <NICK> - [LENT1000][n][i][c][k]
+9 SETSYM <SYMBOL> - [00001001][symbol]
+10 LEAVE - [00001010]

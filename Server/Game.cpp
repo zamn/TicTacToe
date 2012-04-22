@@ -6,13 +6,21 @@
 
 string tolower(string);
 
-Game::Game(Player *p1) {
+Game::Game(Player* p1) {
 	this->p1 = p1;
+	this->p2 = p2;
+	full = false;
 }
 
 Game::~Game() {
-	delete p1;
-	delete p2;
+	if (p1 != NULL) 
+		delete p1;
+	if (p2 != NULL)
+		delete p2;
+}
+
+string Game::getOwner() {
+	return p1->getNick();
 }
 
 // Sends the specified move from the specified player
@@ -90,6 +98,17 @@ Player* Game::getOpposite(Player* player) {
 	else {
 		return p1;
 	}
+}
+
+bool Game::exists(Player* player) {
+	if (p2->getFD() == player->getFD()) {
+		return true;
+	}
+	return false;
+}
+
+bool Game::isFull() {
+	return full;
 }
 
 // Reinventing the wheel
