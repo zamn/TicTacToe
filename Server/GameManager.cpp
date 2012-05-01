@@ -29,23 +29,25 @@ bool GameManager::exists(int n) {
 int GameManager::addGame(Game* g) {
 	while (!pthread_mutex_trylock(&trackerinc)) {
 		if (tracker <= maxGameCount) {
-			if (free->empty()) {
-				games[tracker] = g;
-				tracker++;
-				pthread_mutex_unlock(&trackerinc);
-				cout << "game num: " << tracker << endl;
-				return (tracker-1);
-			}
+			games[tracker] = g;
+			tracker++;
+			pthread_mutex_unlock(&trackerinc);
+			return (tracker-1);
 		}
 		else {
 			if (!free->empty()) {
+				cout << "should never be hitting heres.." << endl;
 				int spot = free->top();
-				game[spot] = g;
+				free->pop();
+				games[spot] = g;
 				pthread_mutex_unlock(&trackerinc);
 				return spot;
 			}
-			else 
+			else  {
+				pthread_mutex_unlock(&trackerinc);
+				cout << "am i ever hitting this -1? " << endl;
 				return -1;
+			}
 		}
 	}
 	return -1;
@@ -53,9 +55,9 @@ int GameManager::addGame(Game* g) {
 
 // Returns the game object n
 Game* GameManager::getGame(int n) {
-	if (games[n] != '\0')
+	if (games[n] != NULL)
 		return games[n];
-	return '\0';
+	return NULL;
 }
 
 // Removes the game from the game manager (deleting it) and pushes that 
@@ -64,6 +66,7 @@ Game* GameManager::getGame(int n) {
 bool GameManager::removeGame(int n) {
 	if (games[n] != NULL) {
 		delete games[n];
+		games[n] = NULL;
 		free->push(n);
 		return true;
 	}

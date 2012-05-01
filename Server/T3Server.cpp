@@ -31,23 +31,24 @@ void *handleCon(void* arg) {
 	if ((p1 = sh.handleInit(fd)) != 0) {
 		int gameID = -1;
 	       	while ((choice = sh.detChoice(fd, &gameID)) != -1) {
-			cout << choice << endl;
+			cout << "choice: " << choice << endl;
 			if (choice == CREATE_GAME) {
 				if ((gameID = gm.addGame(new Game(p1))) != -1) {
-					std::cout << "gamied: " << gameID << endl;
 					std::cout << "New game has been created!" << endl;
 					ph.sendSuccess(fd, gameID+1);
 					p1->setGID(gameID);
 				}
 				else {
+					cout << "failed to make game " << endl;
 					ph.sendFail(fd, 7);
 				}
 			}
 			else if (choice == JOIN_GAME) {
 				cout << "Connection has chosen 2." << endl;
 				Game* g;
-				if ((g = gm.getGame(gameID-1)) != '\0') {
+				if ((g = gm.getGame(gameID-1)) != NULL) {
 					int result;
+					cout << "OWNER: " << gm.exists(gameID-1) << endl;
 					if ((result = g->addPlayer(p1)) == 0) {
 						cout << "Successfully added to game: " << gameID << endl ;
 						ph.sendSuccess(fd);
@@ -78,13 +79,19 @@ void *handleCon(void* arg) {
 				}
 			}
 			else if (choice == SEND_MOVE) {
-				Player* player = gm.getGame(p1->getGID())->getOpposite(p1);
-				ph.sendMove(player, gameID);
+				if (gm.getGame(p1->getGID())->isFull()) {
+					Player* player = gm.getGame(p1->getGID())->getOpposite(p1);
+					ph.sendMove(player, gameID);
+				}
+				else {
+					ph.sendMove(gm.getGame(p1->getGID())->recentFD(), gameID);
+				}
 			}
 			else if (choice == CHANGE_NICK) {
 				string nick = sh.getNick();
 				if (!nick.empty())
 					p1->setNick(nick);
+				ph.sendSuccess(fd);
 				cout << "Changed persons name to: " << nick << endl;
 			}
 			else if (choice == CHANGE_SYMBOL) {
@@ -92,33 +99,67 @@ void *handleCon(void* arg) {
 				if (sym != ' ') {
 					p1->setSymbol(sym);
 				}
+				ph.sendSuccess(fd);
 				cout << "Changed persons symbol to: " << sym << endl;
 			}
 			else if (choice == LIST) {
 				ph.listPlayers(fd, &gm);
 			}
 			else if (choice == LEAVE) {
-				if (p1->getGID() != -1) {
-					Player* player = gm.getGame(p1->getGID())->getOpposite(p1);
-					gm.getGame(p1->getGID())->removePlayer(p1);
-					ph.sendFail(player->getGID(), 6);
+				int gid = p1->getGID();
+				if (gm.getGame(gid)->isFull()) {
+					Player* temp = gm.getGame(gid)->getOpposite(p1);
+					gm.getGame(gid)->removePlayer(p1);
+					ph.sendFail(temp->getFD(), 6);
 				}
-				// on rejoin dont remove game, just remove player
-				// then re-add player with same game id
+				else {
+					gm.getGame(gid)->removePlayer(p1);
+					gm.removeGame(gid);
+				}
+				cout << "Player has quit!" << endl;
+			}
+			else if (choice == REPLAY) { // fix n/n tonigh
+				Player* player = gm.getGame(p1->getGID())->getOpposite(p1);
+				int gid = p1->getGID();
+				cout << "server got from " << p1->getNick() << ": " << gameID << endl;
+				if (gameID == 0) { // gameID = players decision
+					if (gm.getGame(gid)->removePlayer(p1) == 0) {
+						ph.sendReplay(gm.getGame(gid)->recentFD(), gameID);
+						gm.removeGame(gid);
+					}
+					else
+						ph.sendReplay(gm.getGame(gid)->recentFD(), gameID);
+				}
+				else {
+					if (gm.getGame(gid)->isFull())
+						ph.sendReplay(player->getFD(), gameID);
+				}
 			}
 			else {
 				ph.sendFail(fd, 0);
 			}
 		}
 	}
-	if ((p1 != NULL) && (p1->getGID() != -1) && (gm.getGame(p1->getGID())->isFull())) {
-		Player* player = gm.getGame(p1->getGID())->getOpposite(p1);
+	if ((p1 != NULL) && (p1->getGID() != -1)) {
 		int gid = p1->getGID();
-		gm.getGame(gid)->removePlayer(p1);
-		ph.sendFail(player->getFD(), 6);
-		gm.removeGame(gid);
-		cout << "Player has quit!" << endl;
+		
+		if (gm.exists(gid)) {
+			if (gm.getGame(gid)->isFull()) {
+				Player* temp = gm.getGame(gid)->getOpposite(p1);
+				gm.getGame(gid)->removePlayer(p1);
+				ph.sendFail(temp->getFD(), 6);
+			}
+			else {
+				if (p1 == gm.getGame(gid)->getOwner()) {
+					gm.getGame(gid)->removePlayer(p1);
+					gm.removeGame(gid);
+				}
+			}
+			// instead of deleting game, check to see if other player left then delete gaem
+			cout << "Player has quit!" << endl;
+		} 
 	}
+
 	cout << "HE QUIT! " << choice <<  endl;
 	// implement deleting stuff here...
 	// push game on to stack once its done
@@ -136,10 +177,15 @@ int main(void) {
 	struct addrinfo *res;
 
 	int status;
-	if ((status = getaddrinfo(NULL, "6000", &hints, &res)) != 0) {
+	string port = "6000";
+	if ((status = getaddrinfo(NULL, port.c_str(), &hints, &res)) != 0) {
 		fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
 		return 1;
 	}
+
+	system("clear");
+	cout << "::::Tic Tac Toe Server Started::::" << endl;
+	cout << "Listening on port: " << port << endl;
 
 	int sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (sock == -1) {

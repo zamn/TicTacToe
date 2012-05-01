@@ -9,18 +9,17 @@ string tolower(string);
 Game::Game(Player* p1) {
 	this->p1 = p1;
 	this->p2 = p2;
-	full = false;
+	pcount = 1;
 }
 
 Game::~Game() {
-	if (p1 != NULL) 
-		delete p1;
-	if (p2 != NULL)
+	if (p2 != NULL) {
 		delete p2;
+	}
 }
 
-string Game::getOwner() {
-	return p1->getNick();
+Player* Game::getOwner() {
+	return p1;
 }
 
 // Sends the specified move from the specified player
@@ -28,7 +27,7 @@ string Game::getOwner() {
 // and thats when we send the move.
 // Otherwise, return false!
 bool Game::sendMove(string origin, int pos) {
-	if (full) {
+	if (isFull()) {
 		if (p1->getNick().compare(origin))
 			send(p2->getFD(), origin.c_str(), origin.length(), 0);
 		else
@@ -45,7 +44,8 @@ bool Game::sendMove(string origin, int pos) {
 // Returns 0 on success
 // Returns 5 if the game is full1
 int Game::addPlayer(Player* player) {
-	if (!full) {
+	cout << "am i even getting inside this?" << endl;
+	if (!isFull()) {
 		if (tolower(p1->getNick()).compare(tolower(player->getNick())) == 0) {
 			return 4;
 		}
@@ -57,7 +57,7 @@ int Game::addPlayer(Player* player) {
 				this->p2 = player;
 			else
 				this->p1 = player;
-			full = true;
+			pcount++;
 			std::cout << "Game is now full!" << endl;
 			return 0;
 		}
@@ -67,21 +67,29 @@ int Game::addPlayer(Player* player) {
 }
 
 // Removes the specified player from the game
-bool Game::removePlayer(Player* player) {
+int Game::removePlayer(Player* player) {
 	if (player == p1) { 
-		delete p1;
+		rdFD = p1->getFD();
+		p1 = NULL;
+		p1 = p2;
+		p2 = NULL;
 	}
 	else {
-		delete p2;
+		rdFD = p2->getFD();
+		p2 = NULL;
 	}
-	full = false;
-	return full;
+	pcount--;
+	return pcount;
+}
+
+int Game::recentFD() {
+	return rdFD;
 }
 
 // Returns either all players or a single player
 Player** Game::getPlayers() {
 	Player** temp = new Player*[2];
-	if (full)  {
+	if (isFull())  {
 		temp[0] = p1;
 		temp[1] = p2;
 	}
@@ -108,7 +116,10 @@ bool Game::exists(Player* player) {
 }
 
 bool Game::isFull() {
-	return full;
+	if (pcount == 2)
+		return true;
+	else
+		return false;
 }
 
 // Reinventing the wheel

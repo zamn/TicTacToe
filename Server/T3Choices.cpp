@@ -6,5 +6,6 @@ enum T3Choices {
 	CHANGE_NICK = 8,
 	CHANGE_SYMBOL = 9,
 	LEAVE = 10,
+	REPLAY = 11,
 	DISCONNECT = -1
 };

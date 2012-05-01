@@ -12,9 +12,11 @@ class ProtocolHandler {
 	public:
 		int interpret(unsigned char*);
 		void sendMove(Player*, int);
+		void sendMove(int, int);
 		void sendFail(int, int);
 		void sendSuccess(int, int);
 		void sendSuccess(int);
+		void sendReplay(int, int);
 		void sendInfo(Game*);
 		void listPlayers(int, GameManager*);
 };

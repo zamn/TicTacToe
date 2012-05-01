@@ -14,7 +14,7 @@ class GameManager {
 		int getLength();
 	private:
 		int tracker;
-		static const int maxGameCount = 33;
+		static const int maxGameCount = 31;
 		stack<int> *free;
 		Game* games[maxGameCount];
 };

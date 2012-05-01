@@ -19,3 +19,6 @@
 8 SETNICK <NICK> - [LENT1000][n][i][c][k]
 9 SETSYM <SYMBOL> - [00001001][symbol]
 10 LEAVE - [00001010]
+11 REPLAY - [DECI1011]
+-- DECI = 0 for NO
+	= 1 for YES

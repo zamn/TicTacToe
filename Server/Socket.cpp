@@ -84,6 +84,13 @@ int Socket::detChoice(int fd, int* gid) {
 		temp[0] = buf[1];
 		return 9;
 	}
+	else if (result == 10) {
+		return 10;
+	}
+	else if (result == 11) {
+		*gid = ((buf[0] & 240) >> 4);
+		return 11;
+	}
 
 	return -1;
 }

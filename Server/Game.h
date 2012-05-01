@@ -10,15 +10,17 @@ class Game {
 		~Game();
 		bool sendMove(string, int);
 		int addPlayer(Player*);
-		bool removePlayer(Player*);
+		int removePlayer(Player*);
 		int gameID;
+		int rdFD;
+		int recentFD();
 		bool exists(Player*);
 		bool isFull();
-		string getOwner();
+		Player* getOwner();
 		Player* getOpposite(Player*);
 		Player** getPlayers();
 	private:
-		bool full;
+		int pcount;
 		Player *p1;
 		Player *p2;
 };
