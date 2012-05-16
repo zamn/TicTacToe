@@ -5,7 +5,7 @@
 #include "ProtocolHandler.h"
 #include "User.h"
 
-int interpFail(unsigned char*);
+int interpFail(char*);
 
 ProtocolHandler::ProtocolHandler(int fd) {
 	this->fd = fd;
@@ -41,7 +41,7 @@ int ProtocolHandler::create(int* gid) {
 }
 
 int ProtocolHandler::joinGame(int gid) {
-	unsigned char* sendBuffer = new unsigned char[10];
+ 	char* sendBuffer = new char[10];
 	memset(sendBuffer, '\0', 10);
 	sendBuffer[0] = (char)4;
 	sendBuffer[1] = (char)gid;
@@ -69,9 +69,12 @@ void ProtocolHandler::sendSymbol(char symbol) {
 }
 
 bool ProtocolHandler::getOpponent(User* p2) {
+	cout << "getting opponent here.. i wonder whats happneing behind th scenes! :D " << endl;
 	char* recvBuffer = new char[20];
+	memset(recvBuffer, NULL, 20);
 	if (recv(fd, recvBuffer, 20, 0) != -1) {
-		if ((recvBuffer[0] & ~240) == 1) {
+		cout << "am i getting the information?" << endl;
+		if ((recvBuffer[0] & 15) == 1) {
 			p2->setSymbol(recvBuffer[1]);
 			string temp;
 			int len = (recvBuffer[0] >> 4);
@@ -82,6 +85,8 @@ bool ProtocolHandler::getOpponent(User* p2) {
 			return true;
 		}
 	}
+	delete[] recvBuffer;
+	cout << "I should not be getting here!!!!!!!!!!!!" << sizeof(recvBuffer) << endl;
 	return false;
 }
 
@@ -94,9 +99,34 @@ void ProtocolHandler::sendMove(int move) {
 int ProtocolHandler::getMove() {
 	char* recvBuffer = new char[10];
 	recv(fd, recvBuffer, 10, 0);
+	int message = recvBuffer[0] & ~240;
+	int failCode = interpFail(recvBuffer);
+	if ((message == 7) && (failCode == 6)) {
+		return -1;
+	}
 	return ((recvBuffer[0] & 240) >> 4);
 }
 
-int interpFail(unsigned char* buf) {
+// Sends the decision to replay the game or not to opponent
+// Then receives the opponents decision and returns that
+// If opponent sends it in the wrong format this returns -1
+int ProtocolHandler::sendReplay(int decision) {
+	char* sendBuffer = new char[10];
+	cout << "Decision: " << decision << endl;
+	sendBuffer[0] = (decision << 4);
+	sendBuffer[0] |=  11;
+	send(fd, sendBuffer, 1, 0);
+	memset(sendBuffer, NULL, 10);
+	recv(fd, sendBuffer, 10, 0);
+	cout << "am i getting here?" << endl;
+	cout << "sendbuffer[0]  " << (int)(sendBuffer[0] & 15) << endl;
+	if ((sendBuffer[0] & ~240) == 11) {
+		return ((sendBuffer[0] & 240) >> 4);
+	}
+	return -1;
+}
+
+int interpFail(char* buf) {
+	buf[0] &= 240;
 	return (buf[0] >> 4);
 }

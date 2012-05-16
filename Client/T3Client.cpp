@@ -15,7 +15,7 @@
 
 using namespace std;
 
-int play(int, int);
+int play(int, int, bool);
 void displayPlayers();
 int displayMenu(int*);
 
@@ -70,6 +70,9 @@ int main(void) {
 	int gid = 0;
 	
 	if (ph->sendInfo(username, symbol) == 2) {
+		int myDecision = 0;
+		bool replay = false;
+		int oldStatus;
 		// SO MANY WHILE LOOPS!!!
 		while (1) {
 			while (status == -1 ||  status == 3 || status == 4) {
@@ -90,9 +93,27 @@ int main(void) {
 					// if 1 wants to play again and the other
 					// doesnt then recreate the game with
 					// the player being 'creator'
-					if (play(gid, status) == 1) {
+					oldStatus = status;
+					myDecision = play(gid, status, replay);
+					if (myDecision == 0 || myDecision == 1) {
+						cout << "OK GAIZ SENDING MY SHIAT NAO" << endl;
+						status = ph->sendReplay(myDecision);
+						if (status == -1) status = 0;
+						cout << "my decision" << myDecision << endl;
+						cout << "status" << status << endl;	
+						if (myDecision == 1) {
+							if (status == 0)
+								status = 1; // if user wants to play again and opponent doesn then recreate game.
+							else
+								status = oldStatus; // if opponent wants to play again do shit
+						}
+						// if user doesnt want to play again then go back to menu.
+						else {
+							status = -1;
+						}
 					}
-					else {
+					else if (myDecision == -1) { // if opponent ranodmly quits out!
+						status = 1;
 					}
 					break;
 				}
@@ -210,7 +231,7 @@ int displayMenu(int* gid) {
  * 	-1 == opponent disconnected
 */
 
-int play(int gid, int status) {
+int play(int gid, int status, bool replay) {
 	string winner = "";
 	system("clear");
 	switch (status) {
@@ -222,16 +243,32 @@ int play(int gid, int status) {
 		}
 		case 2: {
 			cout << "Successfully joined Game ID: " << gid <<  endl;
-			ph->getOpponent(player2);
+			if (!ph->getOpponent(player2)) {
+				exit(1);
+			}
+			break;
+		}
+		case 7: {
+			status = 2;
+			break;
 		}
 	}
 	system("clear");
 	int move;
+	int opmove;
 	if (status == 2) {
 		displayPlayers();
 		gb->draw();
 		cout << "Waiting on other players move..." << endl;
-		gb->update(ph->getMove(), *player2);
+		opmove = ph->getMove();
+		if (opmove != -1)
+			gb->update(opmove, *player2);
+		else {
+			cout << player2->getNick() << " has quit the game!" << endl;
+			cout << "Resetting game..." << endl;
+			sleep(5);
+			return -1;
+		}
 		system("clear");
 	}
 
@@ -272,7 +309,14 @@ int play(int gid, int status) {
 			}
 		}
 		cout << "Waiting on other players move..." << endl;
-		if (gb->update(ph->getMove(), *player2) == 2) {
+		opmove = ph->getMove();
+		if (opmove == -1) {
+			cout << player2->getNick() << " has quit the game!" << endl;
+			cout << "Resetting game..." << endl;
+			sleep(5);
+			return -1;
+		}
+		if (gb->update(opmove, *player2) == 2) {
 			cout << "Tie game! Good job dar.." << endl;
 			break;
 		}
