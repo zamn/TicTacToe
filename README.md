@@ -24,7 +24,7 @@ cd TicTacToe/Client && make
 ```
 If you changed the port on the server then you will need to edit T3Client.cpp and change the port there also. I didn't make that as user friendly as I should have.
 
-*NOTE:* Client does still have some bugs as I was simply using it to test the server. I recommend using the C# client if you want to play the game.
+**NOTE: Client does still have some bugs as I was simply using it to test the server. I recommend using the C# client if you want to play the game.**
 
 Contact Info
 =====================

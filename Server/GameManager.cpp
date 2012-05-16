@@ -36,7 +36,6 @@ int GameManager::addGame(Game* g) {
 		}
 		else {
 			if (!free->empty()) {
-				cout << "should never be hitting heres.." << endl;
 				int spot = free->top();
 				free->pop();
 				games[spot] = g;
@@ -45,7 +44,6 @@ int GameManager::addGame(Game* g) {
 			}
 			else  {
 				pthread_mutex_unlock(&trackerinc);
-				cout << "am i ever hitting this -1? " << endl;
 				return -1;
 			}
 		}

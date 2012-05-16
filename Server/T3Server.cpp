@@ -118,7 +118,7 @@ void *handleCon(void* arg) {
 				}
 				cout << "Player has quit!" << endl;
 			}
-			else if (choice == REPLAY) { // fix n/n tonigh
+			else if (choice == REPLAY) { 
 				Player* player = gm.getGame(p1->getGID())->getOpposite(p1);
 				int gid = p1->getGID();
 				cout << "server got from " << p1->getNick() << ": " << gameID << endl;
@@ -155,14 +155,12 @@ void *handleCon(void* arg) {
 					gm.removeGame(gid);
 				}
 			}
-			// instead of deleting game, check to see if other player left then delete gaem
+			// instead of deleting game, check to see if other player left then delete game
 			cout << "Player has quit!" << endl;
 		} 
 	}
 
 	cout << "HE QUIT! " << choice <<  endl;
-	// implement deleting stuff here...
-	// push game on to stack once its done
 	close(fd);
 	return 0;
 }
