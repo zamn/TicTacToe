@@ -12,7 +12,7 @@ To make and run the Server
 ----------------------
 ```
 cd TicTacToe/Server && make
-./server.o
+./server
 ```
 The server runs on port 6000 which you can change in T3Server.cpp.
 
@@ -20,7 +20,7 @@ To make and run the Client
 ----------------------------
 ```
 cd TicTacToe/Client && make
-./client.o
+./client
 ```
 If you changed the port on the server then you will need to edit T3Client.cpp and change the port there also. I didn't make that as user friendly as I should have.
 
